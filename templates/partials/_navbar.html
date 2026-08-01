@@ -1,0 +1,55 @@
+{% load static %}
+<header class="navbar navbar-expand-md navbar-light d-print-none">
+    <div class="container-xl">
+
+        <!-- Sidebar toggle (mobile) -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu"
+            aria-controls="sidebar-menu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+            <a href="{% url 'pages:home' %}" class="text-decoration-none d-flex align-items-center gap-2">
+                <i class="ti ti-sword text-primary" style="font-size: 1.6rem;"></i>
+                <span class="fw-bold">Questlog</span>
+            </a>
+        </h1>
+
+        <div class="navbar-nav flex-row order-md-last ms-auto align-items-center">
+
+            <!-- XP quick-glance, hidden on small screens -->
+            <div class="nav-item d-none d-md-flex align-items-center me-3">
+                <i class="ti ti-bolt text-warning me-1"></i>
+                <span class="text-muted small">{{ profile.total_xp|default:"0" }} XP</span>
+            </div>
+
+            <!-- Theme toggle -->
+            <div class="nav-item me-2">
+                <button type="button" id="theme-toggle" class="nav-link px-2" aria-label="Toggle dark mode">
+                    <i class="ti ti-moon ti-size-3 theme-icon-dark"></i>
+                    <i class="ti ti-sun-high ti-size-3 theme-icon-light"></i>
+                </button>
+            </div>
+
+            <!-- User menu -->
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown"
+                    aria-label="Open user menu">
+                    <span class="avatar avatar-sm rounded bg-primary-lt">
+                        {{ user.username|default:"?"|first|upper }}
+                    </span>
+                    <div class="d-none d-xl-block ps-2">
+                        <div>{{ user.username|default:"Guest" }}</div>
+                        <div class="mt-1 small text-muted">Level {{ profile.level|default:"1" }}</div>
+                    </div>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <a href="#" class="dropdown-item">Profile</a>
+                    <a href="#" class="dropdown-item">Settings</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item">Log out</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

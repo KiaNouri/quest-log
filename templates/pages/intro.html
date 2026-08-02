@@ -1,0 +1,58 @@
+{% extends "_intro_base.html" %}
+
+{% block title %}Questlog · Turn your backlog into an adventure{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center py-5">
+    <div class="col-lg-7 text-center">
+
+        <div class="xp-label mb-2">Your backlog, gamified</div>
+        <h1 class="display-6 fw-bold mb-3">Every unplayed game is a quest waiting to start</h1>
+        <p class="text-muted mb-4">
+            Track your backlog, take on quests to finish your games, complete community
+            challenges from guilds, and earn XP for every game you clear.
+        </p>
+
+        <div class="d-flex justify-content-center gap-2">
+            <a href="{% url 'accounts:signup' %}" class="btn btn-primary btn-lg">Get started</a>
+            <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-lg">Log in</a>
+        </div>
+
+    </div>
+</div>
+
+<div class="row row-cards py-4">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="ti ti-map text-primary mb-2" style="font-size: 1.8rem;"></i>
+                <h4>Take on quests</h4>
+                <p class="text-muted small mb-0">Turn any game in your backlog into a quest, with optional custom
+                    challenges.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="ti ti-bolt text-warning mb-2" style="font-size: 1.8rem;"></i>
+                <h4>Earn XP</h4>
+                <p class="text-muted small mb-0">Complete quests and challenges to level up, based on how hard they are.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="ti ti-users-group text-success mb-2" style="font-size: 1.8rem;"></i>
+                <h4>Join guilds</h4>
+                <p class="text-muted small mb-0">Find guilds for your favorite games or playstyles and take on their
+                    challenges.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

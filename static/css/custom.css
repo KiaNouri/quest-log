@@ -1,0 +1,196 @@
+/* ==========================================================================
+   Questlog — custom theme layer on top of Tabler UI
+   Load AFTER tabler.min.css. Only overrides + project-specific components
+   live here — nothing here should duplicate Tabler's own utilities.
+   ========================================================================== */
+
+:root {
+    /* Brand palette — override Tabler's default primary/accents */
+    --tblr-primary: #6c5ce7;
+    /* arcane violet — quests, primary actions */
+    --tblr-primary-rgb: 108, 92, 231;
+    --ql-gold: #f5a623;
+    /* XP / rewards */
+    --ql-gold-soft: #fdeecb;
+    --ql-success: #00b894;
+    /* completed state */
+    --ql-danger: #e8590c;
+    /* hard difficulty */
+    --ql-bg: #f6f6fb;
+    --ql-card-radius: 0.75rem;
+
+    --ql-font-display: 'Sora', var(--tblr-font-sans-serif);
+}
+
+body {
+    background: var(--ql-bg);
+}
+
+h1,
+h2,
+h3,
+h4,
+.navbar-brand,
+.page-title,
+.card-title {
+    font-family: var(--ql-font-display);
+    letter-spacing: -0.01em;
+}
+
+/* --------------------------------------------------------------------
+   XP bar — the signature element. Segmented ticks + animated gold fill.
+   Usage: see partials markup, JS animates width on load via .xp-bar-fill
+   -------------------------------------------------------------------- */
+.xp-bar {
+    position: relative;
+    height: 10px;
+    border-radius: 999px;
+    background: #e9e6fb;
+    overflow: hidden;
+}
+
+.xp-bar-fill {
+    position: absolute;
+    inset: 0;
+    width: 0%;
+    /* animated by custom.js on load, from data-value */
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--ql-gold) 0%, #ffd873 100%);
+    box-shadow: 0 0 8px rgba(245, 166, 35, 0.55);
+    transition: width 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.xp-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #8a7fe0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* --------------------------------------------------------------------
+   Quest cards
+   -------------------------------------------------------------------- */
+.quest-card {
+    border-radius: var(--ql-card-radius);
+    border: 1px solid #eceaf9;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.quest-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(108, 92, 231, 0.12);
+}
+
+.quest-cover {
+    height: 96px;
+    border-radius: var(--ql-card-radius) var(--ql-card-radius) 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, var(--tblr-primary), #a29bfe);
+}
+
+/* Difficulty badges for challenges attached to a quest */
+.badge-difficulty-easy {
+    background: var(--ql-success);
+    color: #fff;
+}
+
+.badge-difficulty-medium {
+    background: var(--ql-gold);
+    color: #3a2a00;
+}
+
+.badge-difficulty-hard {
+    background: var(--ql-danger);
+    color: #fff;
+}
+
+/* Stat cards on the home dashboard */
+.stat-card .stat-value {
+    font-family: var(--ql-font-display);
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+/* Sidebar active-state accent (violet left border instead of Tabler's default) */
+.navbar-vertical .nav-link.active {
+    color: var(--tblr-primary);
+    background: rgba(108, 92, 231, 0.08);
+    border-radius: 0.5rem;
+}
+
+/* --------------------------------------------------------------------
+   Auth pages (login / signup) — centered card, no sidebar/navbar
+   -------------------------------------------------------------------- */
+.auth-wrapper {
+    min-height: 100vh;
+    padding: 1.5rem;
+}
+
+.auth-topbar,
+.auth-card {
+    width: 100%;
+    max-width: 380px;
+}
+
+.auth-card {
+    border-radius: var(--ql-card-radius);
+    border: 1px solid #eceaf9;
+}
+
+[data-bs-theme="dark"] .auth-card {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* --------------------------------------------------------------------
+   Theme toggle button — show sun in dark mode (click to go light),
+   moon in light mode (click to go dark). Tabler sets data-bs-theme
+   on <html>; we key off that instead of a prefers-color-scheme query
+   so the button always matches the theme actually applied.
+   -------------------------------------------------------------------- */
+.theme-icon-light {
+    display: none;
+}
+
+[data-bs-theme="dark"] .theme-icon-light {
+    display: inline;
+}
+
+[data-bs-theme="dark"] .theme-icon-dark {
+    display: none;
+}
+
+/* --------------------------------------------------------------------
+   Dark mode overrides for custom components.
+   Tabler repaints its own components automatically; these only fix
+   the project-specific ones defined above, whose colors were tuned
+   for a light background.
+   -------------------------------------------------------------------- */
+[data-bs-theme="dark"] {
+    --ql-bg: #14141f;
+}
+
+[data-bs-theme="dark"] .xp-bar {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+[data-bs-theme="dark"] .xp-label {
+    color: #b3a9f7;
+}
+
+[data-bs-theme="dark"] .quest-card {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-bs-theme="dark"] .quest-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+[data-bs-theme="dark"] .badge-difficulty-medium {
+    color: #241a00;
+    /* keep gold badge text readable on dark */
+}

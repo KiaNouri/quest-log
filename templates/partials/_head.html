@@ -1,0 +1,30 @@
+{% load static %}
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>{% block title %}Questlog{% endblock %}</title>
+
+<!--
+  Theme init — must run before CSS paints, or the page flashes light
+  before switching to dark. This is the one intentional exception to
+  keeping JS out of templates; everything else lives in custom.js.
+-->
+<script>
+    (function () {
+        var saved = localStorage.getItem('ql-theme');
+        var theme = saved || 'light';
+        document.documentElement.setAttribute('data-bs-theme', theme);
+    })();
+</script>
+
+<!-- Tabler UI (CDN build — no local build step needed) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+
+<!-- Display font used for headings, paired with Tabler's default body font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&display=swap" rel="stylesheet">
+
+<!-- Project-level static files — kept separate from Tabler and from HTML -->
+<link rel="stylesheet" href="{% static 'css/custom.css' %}" />
+
+{% block extra_css %}{% endblock %}

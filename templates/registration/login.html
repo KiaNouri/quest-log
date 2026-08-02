@@ -1,12 +1,24 @@
-{% extends "_base.html" %}
+{% extends "_auth_base.html" %}
+{% load crispy_forms_tags %}
 
-{% block title %}Log In{% endblock title %}
+{% block title %}Log in · Questlog{% endblock %}
 
-{% block content %}
-<h2>Log In</h2>
-<form method="post">
+{% block auth_content %}
+
+<h2 class="text-center mb-1">Welcome back</h2>
+<p class="text-muted text-center mb-4">Log in to continue your quests.</p>
+
+<form method="post" novalidate>
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Log In</button>
+    {{ form|crispy }}
+
+    <div class="form-footer">
+        <button type="submit" class="btn btn-primary w-100">Log in</button>
+    </div>
 </form>
-{% endblock content %}
+
+<div class="text-center text-muted mt-3">
+    Don't have an account? <a href="{% url 'accounts:signup' %}">Sign up</a>
+</div>
+
+{% endblock %}

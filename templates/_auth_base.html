@@ -1,0 +1,43 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% include "partials/_head.html" %}
+</head>
+
+<body class="d-flex flex-column">
+
+    <div class="auth-wrapper d-flex flex-column flex-fill align-items-center justify-content-center">
+
+        <div class="auth-topbar d-flex align-items-center justify-content-between mb-4">
+            <a href="{% url 'pages:home' %}" class="text-decoration-none d-flex align-items-center gap-2">
+                <i class="ti ti-sword text-primary" style="font-size: 1.6rem;"></i>
+                <span class="fw-bold h3 mb-0">Questlog</span>
+            </a>
+
+            <button type="button" id="theme-toggle" class="btn btn-icon btn-ghost-secondary"
+                aria-label="Toggle dark mode">
+                <i class="ti ti-moon ti-size-3 theme-icon-dark"></i>
+                <i class="ti ti-sun-high ti-size-3 theme-icon-light"></i>
+            </button>
+        </div>
+
+        <div class="card auth-card">
+            <div class="card-body">
+                {% block auth_content %}{% endblock %}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Tabler JS bundle (dropdowns etc. — not strictly needed here, kept for consistency) -->
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+
+    <!-- Project-level custom JS (theme toggle) -->
+    <script src="{% static 'js/custom.js' %}"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

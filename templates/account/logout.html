@@ -1,0 +1,29 @@
+{% extends "_auth_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Log Out" %} · Questlog{% endblock %}
+
+{% block auth_content %}
+
+<div class="text-center mb-3">
+    <i class="ti ti-door-exit text-primary" style="font-size: 2rem;"></i>
+</div>
+
+<h2 class="text-center mb-1">{% trans "Log out" %}</h2>
+<p class="text-muted text-center mb-4">
+    {% trans "Are you sure you want to log out?" %}
+</p>
+
+<form method="post" action="{% url 'account_logout' %}">
+    {% csrf_token %}
+    {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %}
+    <button type="submit" class="btn btn-primary w-100">{% trans "Log out" %}</button>
+</form>
+
+<div class="text-center text-muted mt-3">
+    <a href="{% url 'pages:home' %}">{% trans "Cancel" %}</a>
+</div>
+
+{% endblock %}

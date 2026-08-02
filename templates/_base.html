@@ -3,31 +3,7 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>{% block title %}Questlog{% endblock %}</title>
-
-    <!-- Dark/light mode -->
-    <script>
-        (function () {
-            var saved = localStorage.getItem('ql-theme');
-            var theme = saved || 'light';
-            document.documentElement.setAttribute('data-bs-theme', theme);
-        })();
-    </script>
-
-    <!-- Tabler UI -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
-
-    <!-- Display font used for headings, paired with Tabler's default body font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&display=swap" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
-
-    {% block extra_css %}{% endblock %}
+    {% include "partials/_head.html" %}
 </head>
 
 <body>
@@ -51,7 +27,7 @@
     <!-- Tabler JS bundle (handles sidebar toggle, dropdowns, etc.) -->
     <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
 
-    <!-- Custom JS -->
+    <!-- Project-level custom JS -->
     <script src="{% static 'js/custom.js' %}"></script>
 
     {% block extra_js %}{% endblock %}

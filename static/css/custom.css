@@ -124,6 +124,29 @@ h4,
 }
 
 /* --------------------------------------------------------------------
+   Auth pages (login / signup) — centered card, no sidebar/navbar
+   -------------------------------------------------------------------- */
+.auth-wrapper {
+    min-height: 100vh;
+    padding: 1.5rem;
+}
+
+.auth-topbar,
+.auth-card {
+    width: 100%;
+    max-width: 380px;
+}
+
+.auth-card {
+    border-radius: var(--ql-card-radius);
+    border: 1px solid #eceaf9;
+}
+
+[data-bs-theme="dark"] .auth-card {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* --------------------------------------------------------------------
    Theme toggle button — show sun in dark mode (click to go light),
    moon in light mode (click to go dark). Tabler sets data-bs-theme
    on <html>; we key off that instead of a prefers-color-scheme query

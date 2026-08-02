@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Third-party
+    "crispy_forms",
+    "crispy_bootstrap5",
     # Local
     "accounts",
     "pages",
@@ -142,3 +145,7 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 # Redircetions
 LOGIN_REDIRECT_URL = "pages:home"
 LOGOUT_REDIRECT_URL = "pages:home"
+
+# django-crispy-forms
+CRISPY_ALLOWED_TEMPLATE_PACK = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"

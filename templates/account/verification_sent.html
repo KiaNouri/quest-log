@@ -1,0 +1,20 @@
+{% extends "_auth_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Verify Your Email" %} · Questlog{% endblock %}
+
+{% block auth_content %}
+
+<div class="text-center mb-3">
+    <i class="ti ti-mail-forward text-primary" style="font-size: 2rem;"></i>
+</div>
+
+<h2 class="text-center mb-1">{% trans "Check your inbox" %}</h2>
+<p class="text-muted text-center mb-0">
+    {% blocktrans %}
+    We've sent a confirmation link to your email address.
+    Click the link to verify your account before logging in.
+    {% endblocktrans %}
+</p>
+
+{% endblock %}

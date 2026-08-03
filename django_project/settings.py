@@ -50,8 +50,8 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     # Local
-    "accounts",
-    "pages",
+    "apps.accounts",
+    "apps.pages",
 ]
 
 MIDDLEWARE = [

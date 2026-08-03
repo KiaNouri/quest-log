@@ -1,0 +1,10 @@
+{% load i18n %}{% autoescape off %}{% blocktrans %}Hi {{ user }},{% endblocktrans %}
+
+{% blocktrans %}Welcome to Questlog. You're one step from starting your first quest — just confirm your email address to activate your account:{% endblocktrans %}
+
+{{ activate_url }}
+
+{% blocktrans %}If you didn't sign up for Questlog, you can safely ignore this email.{% endblocktrans %}
+
+{% blocktrans %}— The Questlog Team{% endblocktrans %}
+{% endautoescape %}

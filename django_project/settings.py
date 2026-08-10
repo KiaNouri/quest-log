@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     # Local
     "apps.accounts",
     "apps.pages",
+    "apps.games",
 ]
 
 MIDDLEWARE = [

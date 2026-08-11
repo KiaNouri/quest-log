@@ -28,7 +28,10 @@ class GameAdmin(admin.ModelAdmin):
     readonly_fields = ("slug",)
     filter_horizontal = ("genres",)
     fieldsets = (
-        ("Basic Info", {"fields": ("title", "slug", "published_year", "genres")}),
+        (
+            "Basic Info",
+            {"fields": ("title", "slug", "published_year", "genres", "story_summary")},
+        ),
         ("Industry Details", {"fields": ("developer", "publisher")}),
         (
             "Media & External Sync",

@@ -29,9 +29,9 @@
 
   <div class="row row-cards">
     {% for game in games %}
-    <div class="col-sm-6 col-lg-4 col-xl-3">
-      <a href="#" class="card quest-card h-100 text-decoration-none text-reset">
-        <div class="quest-cover">
+    <div class="col-sm-6 col-lg-4 col-xl-3" style="height: 360px;">
+      <a href="{{ game.get_absolute_url }}" class="card quest-card h-100 text-decoration-none text-reset">
+        <div class="quest-cover" style="height: 200px; border-radius: var(--ql-card-radius);">
           {% if game.cover_image_url %}
             <img src="{{ game.cover_image_url }}" alt="{{ game.title }}" class="w-100 h-100" style="object-fit: cover; border-radius: inherit;" />
           {% else %}

@@ -2,6 +2,7 @@ import datetime
 
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.urls import reverse
 from django.utils.text import slugify
 
 
@@ -30,6 +31,7 @@ class Game(models.Model):
     cover_image_url = models.URLField(blank=True)
     external_id = models.CharField(max_length=100, blank=True)
     genres = models.ManyToManyField(Genre, blank=True, related_name="games")
+    story_summary = models.TextField(blank=True)
     developer = models.CharField(max_length=255, blank=True)
     publisher = models.CharField(max_length=255, blank=True)
     published_year = models.PositiveSmallIntegerField(
@@ -52,3 +54,6 @@ class Game(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse("games:detail", kwargs={"slug": self.slug})

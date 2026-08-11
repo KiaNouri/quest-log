@@ -1,5 +1,5 @@
 from django.db.models import Q
-from django.views.generic import ListView
+from django.views.generic import DetailView, ListView
 
 from apps.games.models import Game, Genre
 
@@ -31,3 +31,9 @@ class GameListView(ListView):
         context = super().get_context_data(**kwargs)
         context["all_genres"] = Genre.objects.all()
         return context
+
+
+class GameDetailView(DetailView):
+    model = Game
+    template_name = "games/game_detail.html"
+    context_object_name = "game"

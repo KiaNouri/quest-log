@@ -1,0 +1,68 @@
+{% extends "_base.html" %}
+
+{% block title %}{{ game.title }} · Questlog{% endblock %}
+
+{% block content %}
+
+  <div class="row g-4">
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="quest-cover" style="height: 400px; border-radius: var(--ql-card-radius);">
+          {% if game.cover_image_url %}
+            <img src="{{ game.cover_image_url }}" alt="{{ game.title }}" class="w-100 h-100" style="object-fit: cover; border-radius: inherit;" />
+          {% else %}
+            <i class="ti ti-device-gamepad-2" style="font-size: 3rem;"></i>
+          {% endif %}
+        </div>
+        <div class="card-body">
+          {% if user.is_authenticated %}
+            <form method="post" action="#">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-primary w-100">
+                <i class="ti ti-plus"></i> Add to backlog
+              </button>
+            </form>
+          {% else %}
+            <a href="{% url 'login' %}" class="btn btn-primary w-100">Log in to add to backlog</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <h1 class="mb-1">{{ game.title }}</h1>
+
+      <div class="mb-3">
+        {% for genre in game.genres.all %}
+          <span class="badge bg-blue-lt">{{ genre.name }}</span>
+        {% endfor %}
+      </div>
+
+      <div class="row row-cards mb-4">
+        <div class="col-6 col-md-4">
+          <div class="text-muted small">Developer</div>
+          <div>{{ game.developer|default:"Unknown" }}</div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="text-muted small">Publisher</div>
+          <div>{{ game.publisher|default:"Unknown" }}</div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="text-muted small">Released</div>
+          <div>{{ game.published_year|default:"Unknown" }}</div>
+        </div>
+        {% if game.story_summary %}
+            <h4 class="mt-4 mb-2">Story</h4>
+            <p class="text-muted">{{ game.story_summary }}</p>
+        {% endif %}
+      </div>
+
+      <a href="{% url 'games:list' %}" class="text-decoration-none small">
+        <i class="ti ti-arrow-left"></i> Back to browse
+      </a>
+    </div>
+
+  </div>
+
+{% endblock %}

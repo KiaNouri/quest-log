@@ -25,4 +25,5 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     # Local apps
     path("", include("apps.pages.urls")),
+    path("games/", include("apps.games.urls")),
 ]

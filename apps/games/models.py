@@ -46,9 +46,12 @@ class Game(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             base_slug = slugify(self.title)
-            slug = base_slug
+            year_slug = f"{base_slug}-{self.published_year}"
+            slug = year_slug
+            n = 1
             while Game.objects.filter(slug=slug).exclude(pk=self.pk).exists():
-                slug = f"{base_slug}-{self.published_year}"
+                slug = f"{year_slug}-{n}"
+                n = +1
             self.slug = slug
         super().save(*args, **kwargs)
 

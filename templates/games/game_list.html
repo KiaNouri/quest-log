@@ -29,25 +29,16 @@
 
   <div class="row row-cards">
     {% for game in games %}
-    <div class="col-sm-6 col-lg-4 col-xl-3" style="height: 360px;">
-      <a href="{{ game.get_absolute_url }}" class="card quest-card h-100 text-decoration-none text-reset">
-        <div class="quest-cover" style="height: 200px; border-radius: var(--ql-card-radius);">
-          {% if game.cover_image_url %}
-            <img src="{{ game.cover_image_url }}" alt="{{ game.title }}" class="w-100 h-100" style="object-fit: cover; border-radius: inherit;" />
-          {% else %}
+    <div class="col-sm-6 col-lg-4 col-xl-2">
+      <a href="{{ game.get_absolute_url }}" class="game-tile text-decoration-none text-reset">
+        {% if game.cover_image_url %}
+          <img src="{{ game.cover_image_url }}" alt="{{ game.title }}" class="game-tile-img" />
+        {% else %}
+          <div class="game-tile-img game-tile-placeholder">
             <i class="ti ti-device-gamepad-2"></i>
-          {% endif %}
-        </div>
-        <div class="card-body">
-          <h4 class="card-title mb-1">{{ game.title }}</h4>
-          <div class="text-muted small mb-2">
-            {{ game.developer|default:"Unknown developer" }}
-            {% if game.published_year %} · {{ game.published_year }}{% endif %}
           </div>
-          {% for genre in game.genres.all %}
-            <span class="badge bg-blue-lt">{{ genre.name }}</span>
-          {% endfor %}
-        </div>
+        {% endif %}
+        <div class="game-tile-strip">{{ game.title }}</div>
       </a>
     </div>
     {% empty %}

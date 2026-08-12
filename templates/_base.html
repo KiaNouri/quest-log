@@ -1,36 +1,31 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
-
 <head>
-    {% include "partials/_head.html" %}
+  {% include "partials/_head.html" %}
 </head>
-
 <body>
-    <div class="page">
-
-        {% include "partials/_sidebar.html" %}
-
-        <div class="page-wrapper">
-            {% include "partials/_navbar.html" %}
-
-            <div class="page-body">
-                <div class="container-xl">
-                    {% block content %}{% endblock %}
-                </div>
-            </div>
-
-            {% include "partials/_footer.html" %}
+  <div class="page">
+    {% include "partials/_navbar.html" %}
+    {% include "partials/_tabs.html" %}
+ 
+    <div class="page-wrapper">
+      <div class="page-body">
+        <div class="container-xl">
+          {% block content %}{% endblock %}
         </div>
+      </div>
+ 
+      {% include "partials/_footer.html" %}
     </div>
-
-    <!-- Tabler JS bundle (handles sidebar toggle, dropdowns, etc.) -->
-    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
-
-    <!-- Project-level custom JS -->
-    <script src="{% static 'js/custom.js' %}"></script>
-
-    {% block extra_js %}{% endblock %}
+  </div>
+ 
+  <!-- Tabler JS bundle (handles sidebar toggle, dropdowns, etc.) -->
+  <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+ 
+  <!-- Project-level custom JS -->
+  <script src="{% static 'js/custom.js' %}"></script>
+ 
+  {% block extra_js %}{% endblock %}
 </body>
-
 </html>

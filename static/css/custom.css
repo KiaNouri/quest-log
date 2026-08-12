@@ -116,11 +116,81 @@ h4,
     font-weight: 700;
 }
 
-/* Sidebar active-state accent (violet left border instead of Tabler's default) */
-.navbar-vertical .nav-link.active {
+/* --------------------------------------------------------------------
+   Sticky secondary tabs bar.
+   Tabler already handles navbar background, spacing, and base link
+   color — only the sticky offset, separator, and active/hover accent
+   are ours.
+   -------------------------------------------------------------------- */
+.tabs-bar {
+    top: 56px;
+    /* sits directly under the main navbar; adjust if navbar height changes */
+    z-index: 1020;
+    border-bottom: 1px solid #eceaf9;
+}
+
+[data-bs-theme="dark"] .tabs-bar {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.tabs-bar .nav-link {
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+}
+
+.tabs-bar .nav-link:hover {
     color: var(--tblr-primary);
-    background: rgba(108, 92, 231, 0.08);
-    border-radius: 0.5rem;
+}
+
+.tabs-bar .nav-link.active {
+    color: var(--tblr-primary);
+    border-bottom-color: var(--tblr-primary);
+    font-weight: 600;
+}
+
+/* --------------------------------------------------------------------
+   Game catalog tiles — full-size cover image, name on a grey strip
+   overlaid at the bottom. No separate card body.
+   -------------------------------------------------------------------- */
+.game-tile {
+    position: relative;
+    display: block;
+    border-radius: var(--ql-card-radius);
+    overflow: hidden;
+    aspect-ratio: 3 / 4;
+    margin-bottom: 1rem;
+}
+
+.game-tile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.game-tile-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 2rem;
+    background: linear-gradient(135deg, var(--tblr-primary), #a29bfe);
+}
+
+.game-tile-strip {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.5rem 0.75rem;
+    background: rgba(30, 30, 40, 0.65);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    backdrop-filter: blur(2px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* --------------------------------------------------------------------
@@ -144,6 +214,54 @@ h4,
 
 [data-bs-theme="dark"] .auth-card {
     border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* --------------------------------------------------------------------
+   Achievement badges (medallion-style) — distinct from Tabler's .badge
+   label component. Built from a plain circle + Tabler icon, no custom
+   artwork needed. Earned badges get a gold gradient; locked ones are
+   dimmed and grayscale until unlocked.
+   -------------------------------------------------------------------- */
+.badge-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    margin: 0 auto 0.5rem;
+}
+
+.badge-icon.is-earned {
+    background: linear-gradient(135deg, var(--ql-gold), #ffd873);
+    color: #3a2a00;
+    box-shadow: 0 0 10px rgba(245, 166, 35, 0.5);
+}
+
+.badge-icon.is-locked {
+    background: #e9e6fb;
+    color: #b9b3e0;
+    filter: grayscale(1);
+    opacity: 0.6;
+}
+
+[data-bs-theme="dark"] .badge-icon.is-locked {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.25);
+}
+
+.badge-tile {
+    text-align: center;
+}
+
+.badge-tile .badge-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.badge-tile.is-locked .badge-name {
+    color: var(--tblr-secondary);
 }
 
 /* --------------------------------------------------------------------

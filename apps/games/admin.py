@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Game, Genre
+from apps.games.models import BacklogEntry, Game, Genre
 
 
 @admin.register(Genre)
@@ -48,3 +48,9 @@ class GameAdmin(admin.ModelAdmin):
     @admin.display(description="Genres")
     def get_genres(self, obj):
         return ", ".join([genre.name for genre in obj.genres.all()]) or "-"
+
+
+@admin.register(BacklogEntry)
+class BacklogAdmin(admin.ModelAdmin):
+    list_display = ("user", "game", "added_at")
+    search_fields = ("user__username", "game__title")

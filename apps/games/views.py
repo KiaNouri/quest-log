@@ -51,7 +51,7 @@ class GameDetailView(DetailView):
     context_object_name = "game"
 
 
-class AddToBacklogView(View):
+class AddToBacklogView(LoginRequiredMixin, View):
     """
     Adds selected game to backlog.
 
@@ -91,7 +91,7 @@ class BacklogListView(LoginRequiredMixin, ListView):
             .order_by("-added_at")
         )
 
-    # add code for filtering based on quest completion status
+    # add code for filtering based on quest completion status and tests for it
 
 
 class BacklogRemoveView(LoginRequiredMixin, DeleteView):

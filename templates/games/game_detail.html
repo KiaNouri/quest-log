@@ -55,6 +55,11 @@
         </div>
       </div>
 
+      {% if game.story_summary %}
+        <h4 class="mt-4 mb-2">Story</h4>
+        <p class="text-muted">{{ game.story_summary }}</p>
+      {% endif %}
+
       <a href="{% url 'games:list' %}" class="text-decoration-none small">
         <i class="ti ti-arrow-left"></i> Back to browse
       </a>

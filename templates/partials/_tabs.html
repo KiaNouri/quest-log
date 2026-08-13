@@ -8,15 +8,20 @@
             <span class="nav-link-title">Home</span>
         </a>
 
+        <a class="nav-link {% if request.resolver_match.url_name == 'list' %}active{% endif %}"
+            href="{% url 'games:list' %}">
+            <span class="nav-link-icon"><i class="ti ti-device-gamepad-2"></i></span>
+            <span class="nav-link-title">Games</span>
+
         <a class="nav-link" href="#">
             <span class="nav-link-icon"><i class="ti ti-map"></i></span>
             <span class="nav-link-title">My Quests</span>
         </a>
 
-        <a class="nav-link {% if request.resolver_match.namespace == 'games' %}active{% endif %}"
-            href="{% url 'games:list' %}">
-            <span class="nav-link-icon"><i class="ti ti-device-gamepad-2"></i></span>
-            <span class="nav-link-title">Games</span>
+        <a class="nav-link {% if request.resolver_match.url_name == 'backlog' %}active{% endif %}"
+            href="{% url 'games:backlog' %}">
+            <span class="nav-link-icon"><i class="ti ti-bookmark"></i></span>
+            <span class="nav-link-title">Backlog</span>
         </a>
 
         <a class="nav-link" href="#">

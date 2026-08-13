@@ -12,6 +12,8 @@ class Genre(models.Model):
     slug = models.SlugField(max_length=50, unique=True, blank=True)
 
     def save(self, *args, **kwargs):
+        """If duplicate genre slug exists add a number to the end"""
+
         if not self.slug:
             base_slug = slugify(self.name)
             slug = base_slug
@@ -27,6 +29,13 @@ class Genre(models.Model):
 
 
 class Game(models.Model):
+    """
+    A game imported from the external game API.
+
+    `external_id` identifies the game in the source API and is
+    used to prevent importing the same game twice.
+    """
+
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
     cover_image_url = models.URLField(blank=True)
@@ -45,6 +54,8 @@ class Game(models.Model):
     )
 
     def save(self, *args, **kwargs):
+        """Add published year to slug and in case duplicate exists add a number"""
+
         if not self.slug:
             base_slug = slugify(self.title)
             year_slug = f"{base_slug}-{self.published_year}"
@@ -64,6 +75,12 @@ class Game(models.Model):
 
 
 class BacklogEntry(models.Model):
+    """
+    A game added by user. serves as a wishlist for quests.
+
+    Each user can't add the same game twice.
+    """
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,

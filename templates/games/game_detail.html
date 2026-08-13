@@ -17,8 +17,9 @@
         </div>
         <div class="card-body">
           {% if user.is_authenticated %}
-            <form method="post" action="#">
+            <form method="post" action="{% url 'games:backlog-add' slug=game.slug %}">
               {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.path }}" />
               <button type="submit" class="btn btn-primary w-100">
                 <i class="ti ti-plus"></i> Add to backlog
               </button>
@@ -52,11 +53,12 @@
           <div class="text-muted small">Released</div>
           <div>{{ game.published_year|default:"Unknown" }}</div>
         </div>
-        {% if game.story_summary %}
-            <h4 class="mt-4 mb-2">Story</h4>
-            <p class="text-muted">{{ game.story_summary }}</p>
-        {% endif %}
       </div>
+
+      {% if game.story_summary %}
+        <h4 class="mt-4 mb-2">Story</h4>
+        <p class="text-muted">{{ game.story_summary }}</p>
+      {% endif %}
 
       <a href="{% url 'games:list' %}" class="text-decoration-none small">
         <i class="ti ti-arrow-left"></i> Back to browse

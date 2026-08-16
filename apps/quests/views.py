@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
-from django.views.generic import CreateView, DetailView
+from django.views.generic import CreateView, DetailView, ListView
 
 from apps.games.models import Game
 from apps.quests.forms import QuestForm
@@ -55,6 +55,8 @@ class QuestCreateView(LoginRequiredMixin, CreateView):
 
 
 class QuestDetailView(LoginRequiredMixin, DetailView):
+    """users can only ever see their own quests (404 otherwise)."""
+
     model = Quest
     template_name = "quests/quest_detail.html"
     context_object_name = "quest"
@@ -67,4 +69,38 @@ class QuestDetailView(LoginRequiredMixin, DetailView):
         context["quest_challenges"] = self.object.quest_challenges.select_related(
             "challenge"
         )
+        return context
+
+
+class QuestListView(LoginRequiredMixin, ListView):
+    """The `My Quest` tab - active and completed quests for logged-in user."""
+
+    model = Quest
+    template_name = "quests/quest_list.html"
+    context_object_name = "quests"
+
+    def get_queryset(self):
+        """
+        Returns only user's quests also preloads related games and challenges
+        to avoud N+1 queries.
+
+        Results are ordered by time of creation.
+        """
+
+        return (
+            Quest.objects.filter(user=self.request.user)
+            .select_related("game")
+            .prefetch_related("quest_challenges__challenge")
+            .order_by("-created_at")
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        quests = context["quests"]
+        context["active_quests"] = [
+            quest for quest in quests if quest.status == Quest.Status.ACTIVE
+        ]
+        context["completed_quests"] = [
+            quest for quest in quests if quest.status == Quest.Status.COMPLETED
+        ]
         return context

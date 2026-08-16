@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DetailView
 
 from apps.games.models import Game
 from apps.quests.forms import QuestForm
@@ -10,6 +10,12 @@ from apps.quests.models import Quest, QuestChallenge
 
 
 class QuestCreateView(LoginRequiredMixin, CreateView):
+    """
+    Turns a backlogged game into a quest. Expects ?game=<slug> (GET, and
+    carried through as a hidden field on POST). Lets the user pick from
+    existing Challenge objects.
+    """
+
     model = Quest
     form_class = QuestForm
     template_name = "quests/quest_create.html"
@@ -46,3 +52,19 @@ class QuestCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse("quests:detail", kwargs={"pk": self.object.pk})
+
+
+class QuestDetailView(LoginRequiredMixin, DetailView):
+    model = Quest
+    template_name = "quests/quest_detail.html"
+    context_object_name = "quest"
+
+    def get_queryset(self):
+        return Quest.objects.filter(user=self.request.user).select_related("game")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["quest_challenges"] = self.object.quest_challenges.select_related(
+            "challenge"
+        )
+        return context

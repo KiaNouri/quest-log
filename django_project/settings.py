@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "apps.accounts",
     "apps.pages",
     "apps.games",
+    "apps.quests",
 ]
 
 MIDDLEWARE = [

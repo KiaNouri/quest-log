@@ -28,7 +28,7 @@
                 </div>
 
                 <div class="d-flex gap-2">
-                <a href="#" class="btn btn-sm btn-primary">
+                <a href="{% url 'quests:create' %}?game={{ entry.game.slug }}" class="btn btn-sm btn-primary">
                     Start quest
                 </a>
 

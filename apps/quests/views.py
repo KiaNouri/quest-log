@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView
 
-from apps.games.models import Game
+from apps.games.models import BacklogEntry, Game
 from apps.quests.forms import QuestForm
 from apps.quests.models import Quest, QuestChallenge
 
@@ -14,6 +14,8 @@ class QuestCreateView(LoginRequiredMixin, CreateView):
     Turns a backlogged game into a quest. Expects ?game=<slug> (GET, and
     carried through as a hidden field on POST). Lets the user pick from
     existing Challenge objects.
+
+    Removes the game related to the created quest from backlog list.
     """
 
     model = Quest
@@ -45,6 +47,8 @@ class QuestCreateView(LoginRequiredMixin, CreateView):
 
         for challenge in form.cleaned_data["challenges"]:
             QuestChallenge.objects.create(quest=quest, challenge=challenge)
+
+        BacklogEntry.objects.filter(user=self.request.user, game=game).delete()
 
         messages.success(self.request, f"Quest started for {game.title}!")
         self.object = quest

@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.test import TestCase
 from django.urls import reverse
 
-from apps.games.models import Game
+from apps.games.models import BacklogEntry, Game
 from apps.quests.models import Challenge, Quest, QuestChallenge
 
 User = get_user_model()
@@ -69,6 +69,25 @@ class QuestCreateViewTest(TestCase):
         quest = Quest.objects.filter(user=self.user, game=self.game).first()
         self.assertIsNotNone(quest)
         self.assertEqual(quest.quest_challenges.count(), 0)
+
+    def test_starting_quest_removes_game_from_backlog(self):
+        self.client.force_login(self.user)
+        BacklogEntry.objects.create(user=self.user, game=self.game)
+        self.client.post(self.url, {"game": self.game.slug})
+        self.assertFalse(
+            BacklogEntry.objects.filter(user=self.user, game=self.game).exists()
+        )
+
+    def test_starting_quest_does_not_remove_other_users_backlog_entry(self):
+        other_user = User.objects.create_user(
+            username="other", email="other@email.com", password="testpass123"
+        )
+        BacklogEntry.objects.create(user=other_user, game=self.game)
+        self.client.force_login(self.user)
+        self.client.post(self.url, {"game": self.game.slug})
+        self.assertTrue(
+            BacklogEntry.objects.filter(user=other_user, game=self.game).exists()
+        )
 
     def test_duplicate_active_quest_redirects_to_existing_instead_of_creating(self):
         self.client.force_login(self.user)

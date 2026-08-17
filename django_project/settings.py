@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "apps.pages",
     "apps.games",
     "apps.quests",
+    "apps.reviews",
 ]
 
 MIDDLEWARE = [

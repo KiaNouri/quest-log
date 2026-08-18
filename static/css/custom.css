@@ -194,6 +194,20 @@ h4,
 }
 
 /* --------------------------------------------------------------------
+   Review text for show more button
+   -------------------------------------------------------------------- */
+
+.review-text {
+    max-height: 4.5em;
+    overflow: hidden;
+    position: relative;
+}
+
+.review-text.expanded {
+    max-height: none;
+}
+
+/* --------------------------------------------------------------------
    Auth pages (login / signup) — centered card, no sidebar/navbar
    -------------------------------------------------------------------- */
 .auth-wrapper {

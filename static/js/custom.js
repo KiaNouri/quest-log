@@ -60,3 +60,23 @@ function animateStatCounters() {
         window.requestAnimationFrame(step);
     });
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".review-text-wrapper").forEach(function (wrapper) {
+        var text = wrapper.querySelector(".review-text");
+        var toggle = wrapper.querySelector(".review-expand-toggle");
+
+        if (!text || !toggle) return;
+
+        // Show toggle button if text overflows
+        if (text.scrollHeight > text.clientHeight + 4) {
+            toggle.classList.remove("d-none");
+        }
+
+        // Toggle expand state on click
+        toggle.addEventListener("click", function () {
+            var expanded = text.classList.toggle("expanded");
+            toggle.textContent = expanded ? "Show less" : "Show more";
+        });
+    });
+});

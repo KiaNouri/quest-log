@@ -22,7 +22,7 @@ class ReviewAdmin(admin.ModelAdmin):
         "created_at",
     )
     list_select_related = ("game", "user")
-    list_filter = ("rating",)
+    list_filter = ("rating", "created_at")
     search_fields = ("user__username", "game__title")
     raw_id_fields = ("user", "game", "quest")
     inlines = (ReviewVoteInline,)

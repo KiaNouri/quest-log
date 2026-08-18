@@ -46,8 +46,9 @@ class Review(models.Model):
     def __str__(self):
         return f"{self.user.username} on {self.game.title} ({self.rating}/5)"
 
-    # N+1 risk for properties. annotated_review_queryset() in reviews/views.py fixes
-    # that for large N
+    # N+1 risk for properties. `annotated_review_queryset()` in reviews/views.py fixes
+    # that for large N. We keep these for single object views or get a single instance
+    # See the `annotated_review_queryset()`docstring on views.py.
     @property
     def upvote_count(self):
         return self.votes.filter(value=ReviewVote.VoteValue.UP).count()

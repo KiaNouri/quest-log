@@ -39,17 +39,17 @@
       <p class="review-text mb-1">{{ review.text|linebreaksbr }}</p>
       <button type="button" class="btn btn-link btn-sm p-0 review-expand-toggle d-none">Show more</button>
     </div>
-    {# TODO: add urls later #}
+
     <div class="d-flex align-items-center justify-content-between mt-3">
       <div class="btn-group">
-        <form method="post" action="#" class="d-inline">
+        <form method="post" action="{% url 'reviews:upvote' review.pk %}" class="d-inline">
           {% csrf_token %}
           <input type="hidden" name="next" value="{{ request.get_full_path }}">
           <button type="submit" class="btn btn-sm btn-outline-success">
             <i class="ti ti-arrow-big-up"></i> {{ review.upvote_total|default:review.upvote_count }}
           </button>
         </form>
-        <form method="post" action="#" class="d-inline">
+        <form method="post" action="{% url 'reviews:downvote' review.pk %}" class="d-inline">
           {% csrf_token %}
           <input type="hidden" name="next" value="{{ request.get_full_path }}">
           <button type="submit" class="btn btn-sm btn-outline-danger">

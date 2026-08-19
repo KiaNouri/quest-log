@@ -4,6 +4,7 @@ from django.db.models import Count, F, Q
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
+from django.views import View
 from django.views.generic import CreateView, DeleteView, DetailView, ListView
 
 from apps.quests.models import Quest
@@ -175,3 +176,36 @@ class ReviewDeleteView(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         messages.success(self.request, "Review deleted.")
         return reverse("reviews:list")
+
+
+class ReviewVoteView(LoginRequiredMixin, View):
+    """
+    Shared upvote/downvote toggle.
+
+    `vote_value` is bound per-URL via as_view(vote_value=...) in urls.py.
+    Voting again with the same value removes the vote (toggle off); voting with
+    the opposite value flips it.
+    """
+
+    vote_value = None
+
+    def post(self, request, pk):
+        review = get_object_or_404(Review, pk=pk)
+
+        # Faster than `review.user == request.user`. No extra queries
+        if review.user_id == request.user.id:
+            messages.error(request, "You can't vote on your own review.")
+        else:
+            vote, created = ReviewVote.objects.get_or_create(
+                review=review, user=request.user, defaults={"value": self.vote_value}
+            )
+            if not created:
+                if vote.value == self.vote_value:
+                    vote.delete()
+                else:
+                    vote.value = self.vote_value
+                    vote.save(update_fields=["value"])
+
+        # With next if use votes from another page instead of review page they wont be
+        # redirected to review detail page
+        return redirect(request.POST.get("next") or review.get_absolute_url())

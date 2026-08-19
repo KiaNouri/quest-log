@@ -1,6 +1,12 @@
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, F, Q
-from django.views.generic import DetailView, ListView
+from django.shortcuts import get_object_or_404, redirect
+from django.utils import timezone
+from django.views.generic import CreateView, DetailView, ListView
 
+from apps.quests.models import Quest
+from apps.reviews.forms import ReviewForm
 from apps.reviews.models import Review, ReviewVote
 
 
@@ -71,6 +77,8 @@ class ReviewListView(ListView):
 
 
 class ReviewDetailView(DetailView):
+    """Review detail page - also shows the related completed quest."""
+
     model = Review
     template_name = "reviews/review_detail.html"
     context_object_name = "review"
@@ -84,3 +92,70 @@ class ReviewDetailView(DetailView):
             "challenge"
         )
         return context
+
+
+class ReviewCreateView(LoginRequiredMixin, CreateView):
+    """
+    Reviewing a quest is the only way to complete it.
+
+    Tied to a specific quest via URL so the review can only be written by that quest's
+    owner for that quest.
+
+    Form gets the user, game, quest from this view by overrided `form_valid()`. also
+    updates the status and time of completion for that quest
+    """
+
+    model = Review
+    form_class = ReviewForm
+    template_name = "reviews/review_create.html"
+
+    def get_quest(self):
+        return get_object_or_404(
+            Quest, pk=self.kwargs["quest_pk"], user=self.request.user
+        )
+
+    def dispatch(self, request, *args, **kwargs):
+        self.quest = self.get_quest()
+
+        # If this quest already has a review redirect them to that review detail instead
+        # of letting it double submit.
+        if hasattr(self.quest, "review"):
+            return redirect(self.quest.review)
+
+        # If a diffrent quest for the same game already has a review, since each game
+        # can only have one review per user (`unique together` in reviews/models.py),
+        # they have to delete that review first rather than getting an IntegrityError.
+        existing_review = Review.objects.filter(
+            user=request.user, game=self.quest.game
+        ).first()
+        if existing_review:
+            messages.info(
+                request,
+                f"You've already reviewed {self.quest.game.title}. "
+                "Delete your existing review to write a new one.",
+            )
+            return redirect(existing_review)
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["quest"] = self.quest
+        return context
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.game = self.quest.game
+        form.instance.quest = self.quest
+        response = super().form_valid(form)
+
+        self.quest.status = Quest.Status.COMPLETED
+        self.quest.completed_at = timezone.now()
+        self.quest.save(update_fields=["status", "completed_at"])
+        self.quest.quest_challenges.update(completed=True)
+
+        messages.success(self.request, "Review submitted and quest completed!")
+        return response
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()

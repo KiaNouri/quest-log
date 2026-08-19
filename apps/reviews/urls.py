@@ -1,10 +1,11 @@
 from django.urls import path
 
-from apps.reviews.views import ReviewDetailView, ReviewListView
+from apps.reviews.views import ReviewCreateView, ReviewDetailView, ReviewListView
 
 app_name = "reviews"
 
 urlpatterns = [
     path("", ReviewListView.as_view(), name="list"),
+    path("quest/<int:quest_pk>/create/", ReviewCreateView.as_view(), name="create"),
     path("<uuid:pk>/", ReviewDetailView.as_view(), name="detail"),
 ]

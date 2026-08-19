@@ -38,6 +38,9 @@
           {% if quest.status == 'active' %}
             <div class="alert alert-info mt-3">
               Submitting a review will mark this quest complete.
+              <a href="{% url 'reviews:create' quest_pk=quest.pk %}" class="btn btn-primary">
+                <i class="ti ti-pencil me-2"></i> Write your review
+              </a>
             </div>
           {% else %}
             <div class="text-muted small">Completed {{ quest.completed_at|date:"M j, Y" }}</div>

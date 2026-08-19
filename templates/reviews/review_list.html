@@ -1,0 +1,74 @@
+{% extends "_base.html" %}
+
+{% block content %}
+<div class="container-xl py-4">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="mb-0">Reviews</h2>
+  </div>
+
+  <form method="get" class="card card-sm mb-4">
+    <div class="card-body">
+      <div class="row g-2 align-items-end">
+        <div class="col-auto">
+          <label class="form-label mb-1">Rating</label>
+          <select name="rating" class="form-select" onchange="this.form.submit()">
+            <option value="">All ratings</option>
+            {% for value, label in rating_choices %}
+              <option value="{{ value }}" {% if current_rating == value|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-auto">
+          <label class="form-label mb-1">Sort by</label>
+          <select name="sort" class="form-select" onchange="this.form.submit()">
+            <option value="newest" {% if current_sort == "newest" %}selected{% endif %}>Newest</option>
+            <option value="oldest" {% if current_sort == "oldest" %}selected{% endif %}>Oldest</option>
+            <option value="top" {% if current_sort == "top" %}selected{% endif %}>Most upvoted</option>
+            <option value="highest_rated" {% if current_sort == "highest_rated" %}selected{% endif %}>Highest rated</option>
+            <option value="lowest_rated" {% if current_sort == "lowest_rated" %}selected{% endif %}>Lowest rated</option>
+          </select>
+        </div>
+        {% if current_game %}
+          <input type="hidden" name="game" value="{{ current_game }}">
+          <div class="col-auto">
+            <span class="badge bg-blue-lt">Filtered to one game</span>
+          </div>
+        {% endif %}
+        {% if current_rating or current_sort != "newest" or current_game %}
+          <div class="col-auto">
+            <a href="{% url 'reviews:list' %}" class="btn btn-link">Clear filters</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </form>
+
+  {% if reviews %}
+    {% for review in reviews %}
+      {% include "reviews/_review_card.html" %}
+    {% endfor %}
+
+    {% if is_paginated %}
+      <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if current_rating %}&rating={{ current_rating }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}{% if current_game %}&game={{ current_game }}{% endif %}">Prev</a>
+            </li>
+          {% endif %}
+          <li class="page-item disabled">
+            <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+          </li>
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if current_rating %}&rating={{ current_rating }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}{% if current_game %}&game={{ current_game }}{% endif %}">Next</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+  {% else %}
+    <p class="text-muted">No reviews match these filters yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

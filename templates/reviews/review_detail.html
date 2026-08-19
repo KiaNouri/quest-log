@@ -1,0 +1,51 @@
+{% extends "_base.html" %}
+
+{% block content %}
+<div class="container-xl py-4">
+  <div class="row row-cards justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <a href="{% url 'reviews:list' %}" class="text-muted small d-inline-block mb-2">&larr; All reviews</a>
+      {% include "reviews/_review_card.html" %}
+
+      <div class="card mt-3">
+        <div class="card-header">
+          <h3 class="card-title">Quest Details</h3>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-6">
+              <div class="text-muted small">Started</div>
+              <div>{{ review.quest.created_at|date:"M j, Y" }}</div>
+            </div>
+            <div class="col-6">
+              <div class="text-muted small">Completed</div>
+              <div>{{ review.quest.completed_at|date:"M j, Y" }}</div>
+            </div>
+          </div>
+
+          {% if quest_challenges %}
+            <div class="text-muted small mb-1">Challenges</div>
+            <ul class="list-group">
+              {% for qc in quest_challenges %}
+                <li class="list-group-item d-flex align-items-center justify-content-between">
+                  <span>
+                    {{ qc.challenge.name }}
+                    <span class="badge bg-secondary-lt ms-2">{{ qc.challenge.get_difficulty_display }}</span>
+                  </span>
+                  {% if qc.completed %}
+                    <span class="text-success"><i class="ti ti-check"></i></span>
+                  {% else %}
+                    <span class="text-muted"><i class="ti ti-circle"></i></span>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-muted mb-0">No challenges attached to this quest.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

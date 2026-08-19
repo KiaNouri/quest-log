@@ -19,18 +19,14 @@
             <span class="nav-link-title">My Quests</span>
         </a>
 
-        <a class="nav-link {% if request.resolver_match.url_name == 'backlog' %}active{% endif %}"
+        <a class="nav-link {% if request.resolver_match.view_name == 'games:backlog' %}active{% endif %}"
             href="{% url 'games:backlog' %}">
             <span class="nav-link-icon"><i class="ti ti-bookmark"></i></span>
             <span class="nav-link-title">Backlog</span>
         </a>
 
-        <a class="nav-link" href="#">
-            <span class="nav-link-icon"><i class="ti ti-users-group"></i></span>
-            <span class="nav-link-title">Guilds</span>
-        </a>
-
-        <a class="nav-link" href="#">
+        <a class="nav-link {% if request.resolver_match.view_name == 'reviews:list' %}active{% endif %}"
+            href="{% url 'reviews:list' %}">
             <span class="nav-link-icon"><i class="ti ti-star"></i></span>
             <span class="nav-link-title">Reviews</span>
         </a>

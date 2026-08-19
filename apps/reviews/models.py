@@ -2,6 +2,7 @@ import uuid
 
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
 
 
 class Review(models.Model):
@@ -45,6 +46,9 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.user.username} on {self.game.title} ({self.rating}/5)"
+
+    def get_absolute_url(self):
+        return reverse("reviews:detail", kwargs={"pk": self.pk})
 
     # N+1 risk for properties. `annotated_review_queryset()` in reviews/views.py fixes
     # that for large N. We keep these for single object views or get a single instance

@@ -59,7 +59,9 @@
       </div>
 
       <div>
-        <a href="#" class="btn btn-sm btn-link">View</a>
+        {% if request.resolver_match.url_name != "detail" %}
+          <a href="{{ review.get_absolute_url }}" class="btn btn-sm btn-link">View</a>
+        {% endif %}
         {% if request.user == review.user %}
           <a href="#" class="btn btn-sm btn-link text-danger">Delete</a>
         {% endif %}

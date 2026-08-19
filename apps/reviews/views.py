@@ -1,5 +1,5 @@
 from django.db.models import Count, F, Q
-from django.views.generic import ListView
+from django.views.generic import DetailView, ListView
 
 from apps.reviews.models import Review, ReviewVote
 
@@ -67,4 +67,20 @@ class ReviewListView(ListView):
         context["current_rating"] = self.request.GET.get("rating", "")
         context["current_sort"] = self.request.GET.get("sort", "newest")
         context["current_game"] = self.request.GET.get("game", "")
+        return context
+
+
+class ReviewDetailView(DetailView):
+    model = Review
+    template_name = "reviews/review_detail.html"
+    context_object_name = "review"
+
+    def get_queryset(self):
+        return annotated_review_queryset()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["quest_challenges"] = self.object.quest.quest_challenges.select_related(
+            "challenge"
+        )
         return context

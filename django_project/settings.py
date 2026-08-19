@@ -156,8 +156,8 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # django-allauth config
 LOGIN_REDIRECT_URL = "pages:home"
-LOGOUT_REDIRECT_URL = "pages:intro"
-ACCOUNT_LOGOUT_REDIRECT = "pages:intro"
+LOGOUT_REDIRECT_URL = "pages:home"
+ACCOUNT_LOGOUT_REDIRECT = "pages:home"
 SITE_ID = 1
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",

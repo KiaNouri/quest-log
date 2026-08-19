@@ -7,6 +7,8 @@ from django.views import View
 from django.views.generic import DeleteView, DetailView, ListView
 
 from apps.games.models import BacklogEntry, Game, Genre
+from apps.quests.models import Quest
+from apps.reviews.views import annotated_review_queryset
 
 
 class GameListView(ListView):
@@ -49,6 +51,17 @@ class GameDetailView(DetailView):
     model = Game
     template_name = "games/game_detail.html"
     context_object_name = "game"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["reviews"] = annotated_review_queryset().filter(game=self.object)
+
+        if self.request.user.is_authenticated:
+            context["user_quests"] = Quest.objects.filter(
+                user=self.request.user, game=self.object
+            ).order_by("-created_at")
+
+        return context
 
 
 class AddToBacklogView(LoginRequiredMixin, View):

@@ -63,7 +63,7 @@
           <a href="{{ review.get_absolute_url }}" class="btn btn-sm btn-link">View</a>
         {% endif %}
         {% if request.user == review.user %}
-          <a href="#" class="btn btn-sm btn-link text-danger">Delete</a>
+          <a href="{% url 'reviews:delete' review.pk %}" class="btn btn-sm btn-link text-danger">Delete</a>
         {% endif %}
       </div>
     </div>

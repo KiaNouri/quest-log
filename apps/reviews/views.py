@@ -2,8 +2,9 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, F, Q
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import CreateView, DetailView, ListView
+from django.views.generic import CreateView, DeleteView, DetailView, ListView
 
 from apps.quests.models import Quest
 from apps.reviews.forms import ReviewForm
@@ -159,3 +160,18 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return self.object.get_absolute_url()
+
+
+class ReviewDeleteView(LoginRequiredMixin, DeleteView):
+    """Only review's author can delete it."""
+
+    model = Review
+    template_name = "reviews/review_confirm_delete.html"
+    context_object_name = "review"
+
+    def get_queryset(self):
+        return Review.objects.filter(user=self.request.user)
+
+    def get_success_url(self):
+        messages.success(self.request, "Review deleted.")
+        return reverse("reviews:list")

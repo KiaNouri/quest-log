@@ -114,6 +114,11 @@ class QuestListView(LoginRequiredMixin, ListView):
 
 
 class QuestAbandonedView(LoginRequiredMixin, View):
+    """
+    Active quests can be abandoned. Abandoned game recreates q backlog entry if
+    not there already
+    """
+
     def post(self, request, pk):
         quest = get_object_or_404(
             Quest, pk=pk, user=request.user, status=Quest.Status.ACTIVE

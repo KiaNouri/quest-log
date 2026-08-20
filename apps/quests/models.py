@@ -40,8 +40,8 @@ class Quest(models.Model):
     challenges. Challenge completion is tracked separately through the
     QuestChallenge model.
 
-    A quest can be active or completed. `compeleted_at` stores the time
-    of completion
+    A quest can be active or completed or abandoned. `compeleted_at` stores
+    the time of completion.
 
     """
 

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.db.models import Sum
 from django.urls import reverse
 
 
@@ -50,6 +51,10 @@ class Quest(models.Model):
         COMPLETED = "completed", "Completed"
         ABANDONED = "abandoned", "Abandoned"
 
+    # Flat XP every quest is worth just for finishing excludeing the challenges XP.
+    # Kept here rather than settings.py because it's specific to Quest.
+    COMPLETION_XP = 50
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="quests"
     )
@@ -71,6 +76,21 @@ class Quest(models.Model):
 
     def get_absolute_url(self):
         return reverse("quests:detail", kwargs={"pk": self.pk})
+
+    @property
+    def challenge_xp_bonus(self):
+        """Sum of `xp_value` across every challenge attached to this quest. 0 if none."""
+        return self.challenges.aggregate(total=Sum("xp_value"))["total"] or 0
+
+    @property
+    def total_xp_value(self):
+        """
+        How much this quest worths when completed. Sum of flat completion XP
+        and challenges xp values.
+
+        Used when a review completes the quest.
+        """
+        return self.COMPLETION_XP + self.challenge_xp_bonus
 
 
 class QuestChallenge(models.Model):

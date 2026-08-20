@@ -149,14 +149,21 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         form.instance.game = self.quest.game
         form.instance.quest = self.quest
+
+        xp_amount = self.quest.total_xp_value
+        form.instance.xp_awarded = xp_amount
+
         response = super().form_valid(form)
 
         self.quest.status = Quest.Status.COMPLETED
         self.quest.completed_at = timezone.now()
         self.quest.save(update_fields=["status", "completed_at"])
         self.quest.quest_challenges.update(completed=True)
+        self.request.user.profile.add_xp(xp_amount)
 
-        messages.success(self.request, "Review submitted and quest completed!")
+        messages.success(
+            self.request, f"Review submitted and quest completed +{xp_amount} XP!"
+        )
         return response
 
     def get_success_url(self):

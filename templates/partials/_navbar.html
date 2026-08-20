@@ -20,7 +20,7 @@
             <!-- XP quick-glance, hidden on small screens -->
             <div class="nav-item d-none d-md-flex align-items-center me-3">
                 <i class="ti ti-bolt text-warning me-1"></i>
-                <span class="text-muted small">{{ profile.total_xp|default:"0" }} XP</span>
+                <span class="text-muted small">{{ user.profile.total_xp|default:"0" }} XP</span>
             </div>
 
             <!-- Theme toggle -->
@@ -40,7 +40,7 @@
                     </span>
                     <div class="d-none d-xl-block ps-2">
                         <div>{{ user.username|default:"Guest" }}</div>
-                        <div class="mt-1 small text-muted">Level {{ profile.level|default:"1" }}</div>
+                        <div class="mt-1 small text-muted">Level {{ user.profile.level|default:"1" }}</div>
                     </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">

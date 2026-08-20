@@ -234,6 +234,10 @@ class ReviewDetailViewTests(TestCase):
         )
         self.url = reverse("reviews:detail", kwargs={"pk": self.review.pk})
 
+    def test_no_login_required(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
     def test_uses_correct_template(self):
         response = self.client.get(self.url)
         self.assertTemplateUsed(response, "reviews/review_detail.html")
@@ -288,6 +292,41 @@ class ReviewCreateViewTests(TestCase):
         self.client.post(self.url, {"rating": 5, "text": "Amazing game"})
         self.quest_challenge.refresh_from_db()
         self.assertTrue(self.quest_challenge.completed)
+
+    def test_post_sets_xp_awarded_on_review(self):
+        self.client.force_login(self.user)
+        self.client.post(self.url, {"rating": 5, "text": "Amazing game"})
+        review = Review.objects.get(user=self.user, game=self.game)
+        expected_xp = Quest.COMPLETION_XP + self.challenge.xp_value
+        self.assertEqual(review.xp_awarded, expected_xp)
+
+    def test_post_awards_xp_with_no_challenges_attached(self):
+        # a quest with zero challenges should still award COMPLETION_XP
+        bare_game = Game.objects.create(title="Doom 2", slug="doom-2")
+        bare_quest = Quest.objects.create(user=self.user, game=bare_game)
+        url = reverse("reviews:create", kwargs={"quest_pk": bare_quest.pk})
+        self.client.force_login(self.user)
+        self.client.post(url, {"rating": 5, "text": "Fine"})
+        review = Review.objects.get(user=self.user, game=bare_game)
+        self.assertEqual(review.xp_awarded, Quest.COMPLETION_XP)
+
+    def test_post_increments_profile_total_xp(self):
+        self.client.force_login(self.user)
+        profile_before = self.user.profile.total_xp
+        self.client.post(self.url, {"rating": 5, "text": "Amazing game"})
+        self.user.profile.refresh_from_db()
+        expected_xp = Quest.COMPLETION_XP + self.challenge.xp_value
+        self.assertEqual(self.user.profile.total_xp, profile_before + expected_xp)
+
+    def test_post_updates_profile_level_to_match_new_total_xp(self):
+        from apps.accounts.models import Profile
+
+        self.client.force_login(self.user)
+        self.client.post(self.url, {"rating": 5, "text": "Amazing game"})
+        self.user.profile.refresh_from_db()
+        self.assertEqual(
+            self.user.profile.level, Profile.level_for_xp(self.user.profile.total_xp)
+        )
 
     def test_get_redirects_if_quest_already_has_review(self):
         review = Review.objects.create(

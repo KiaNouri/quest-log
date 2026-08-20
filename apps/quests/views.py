@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse
+from django.views import View
 from django.views.generic import CreateView, DetailView, ListView
 
 from apps.games.models import BacklogEntry, Game
@@ -41,7 +41,7 @@ class QuestCreateView(LoginRequiredMixin, CreateView):
             messages.info(
                 self.request, f"You already have an active quest for {game.title}."
             )
-            return redirect("quests:detail", pk=existing.pk)
+            return redirect(existing)
 
         quest = Quest.objects.create(user=self.request.user, game=game)
 
@@ -55,7 +55,7 @@ class QuestCreateView(LoginRequiredMixin, CreateView):
         return redirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse("quests:detail", kwargs={"pk": self.object.pk})
+        return self.object.get_absolute_url()
 
 
 class QuestDetailView(LoginRequiredMixin, DetailView):
@@ -107,4 +107,21 @@ class QuestListView(LoginRequiredMixin, ListView):
         context["completed_quests"] = [
             quest for quest in quests if quest.status == Quest.Status.COMPLETED
         ]
+        context["abandoned_quests"] = [
+            quest for quest in quests if quest.status == Quest.Status.ABANDONED
+        ]
         return context
+
+
+class QuestAbandonedView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        quest = get_object_or_404(
+            Quest, pk=pk, user=request.user, status=Quest.Status.ACTIVE
+        )
+        quest.status = Quest.Status.ABANDONED
+        quest.save(update_fields=["status"])
+
+        BacklogEntry.objects.get_or_create(user=request.user, game=quest.game)
+
+        messages.error(request, f"Quest abondoned for {quest.game.title}")
+        return redirect(quest)

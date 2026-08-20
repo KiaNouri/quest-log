@@ -7,7 +7,10 @@
       <div class="card">
         <div class="card-header d-flex align-items-center justify-content-between">
           <h3 class="card-title mb-0">{{ quest.game.title }}</h3>
-          <span class="badge {% if quest.status == 'completed' %}bg-green-lt{% else %}bg-blue-lt{% endif %}">
+          <span class="badge
+            {% if quest.status == 'completed' %}bg-green-lt
+            {% elif quest.status == 'abandoned' %}bg-secondary-lt
+            {% else %}bg-blue-lt{% endif %}">
             {{ quest.status|capfirst }}
           </span>
         </div>
@@ -36,14 +39,23 @@
           {% endif %}
 
           {% if quest.status == 'active' %}
-            <div class="alert alert-info mt-3">
-              Submitting a review will mark this quest complete.
-              <a href="{% url 'reviews:create' quest_pk=quest.pk %}" class="btn btn-primary">
-                <i class="ti ti-pencil me-2"></i> Write your review
+            <div class="d-flex gap-2 mt-3">
+              <a href="{% url 'reviews:create' quest.pk %}" class="btn btn-primary flex-fill">
+                Submit Review &amp; Complete
               </a>
+              <form method="post" action="{% url 'quests:abandon' quest.pk %}"
+                    onsubmit="return confirm('Abandon this quest? It will go back to your backlog.');">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-secondary">Abandon</button>
+              </form>
             </div>
-          {% else %}
+          {% elif quest.status == 'completed' %}
             <div class="text-muted small">Completed {{ quest.completed_at|date:"M j, Y" }}</div>
+            {% if quest.review %}
+              <a href="{{ quest.review.get_absolute_url }}" class="btn btn-link p-0 mt-1">View your review</a>
+            {% endif %}
+          {% else %}
+            <div class="text-muted small">Abandoned</div>
           {% endif %}
         </div>
       </div>

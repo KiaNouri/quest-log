@@ -28,6 +28,20 @@ class QuestModelTests(TestCase):
         with self.assertRaises(IntegrityError):
             QuestChallenge.objects.create(quest=quest, challenge=challenge)
 
+    def test_total_xp_value_with_no_challenges(self):
+        quest = Quest.objects.create(user=self.user, game=self.game)
+        self.assertEqual(quest.challenge_xp_bonus, 0)
+        self.assertEqual(quest.total_xp_value, Quest.COMPLETION_XP)
+
+    def test_total_xp_value_sums_attached_challenges(self):
+        quest = Quest.objects.create(user=self.user, game=self.game)
+        easy = Challenge.objects.create(name="Easy one", xp_value=25)
+        hard = Challenge.objects.create(name="Hard one", xp_value=75)
+        QuestChallenge.objects.create(quest=quest, challenge=easy)
+        QuestChallenge.objects.create(quest=quest, challenge=hard)
+        self.assertEqual(quest.challenge_xp_bonus, 100)
+        self.assertEqual(quest.total_xp_value, Quest.COMPLETION_XP + 100)
+
 
 class QuestCreateViewTest(TestCase):
     def setUp(self):
@@ -37,6 +51,11 @@ class QuestCreateViewTest(TestCase):
         self.game = Game.objects.create(title="Doom", slug="doom")
         self.challenge = Challenge.objects.create(name="No Deaths", xp_value=100)
         self.url = reverse("quests:create")
+
+    def test_login_required(self):
+        response = self.client.get(self.url, {"game": self.game.slug})
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/accounts/login", response.url)
 
     def test_get_prefills_game_from_query_param(self):
         self.client.force_login(self.user)

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
 
 
 class Challenge(models.Model):
@@ -47,6 +48,7 @@ class Quest(models.Model):
     class Status(models.TextChoices):
         ACTIVE = "active", "Active"
         COMPLETED = "completed", "Completed"
+        ABANDONED = "abandoned", "Abandoned"
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="quests"
@@ -66,6 +68,9 @@ class Quest(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.game.title} ({self.status})"
+
+    def get_absolute_url(self):
+        return reverse("quests:detail", kwargs={"pk": self.pk})
 
 
 class QuestChallenge(models.Model):

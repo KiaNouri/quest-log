@@ -161,6 +161,93 @@ class QuestDetailViewTests(TestCase):
         self.assertIn(self.quest_challenge, response.context["quest_challenges"])
 
 
+class QuestAbandonViewTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="hero", password="pw")
+        self.intruder = User.objects.create_user(username="intruder", password="pw")
+        self.game = Game.objects.create(title="Doom", slug="doom")
+        self.quest = Quest.objects.create(user=self.user, game=self.game)
+        self.url = reverse("quests:abandon", kwargs={"pk": self.quest.pk})
+
+    def test_login_required(self):
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/accounts/login", response.url)
+
+    def test_other_user_cannot_abandon(self):
+        self.client.force_login(self.intruder)
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 404)
+        self.quest.refresh_from_db()
+        self.assertEqual(self.quest.status, Quest.Status.ACTIVE)
+
+    def test_owner_can_abandon_active_quest(self):
+        self.client.force_login(self.user)
+        response = self.client.post(self.url)
+        self.quest.refresh_from_db()
+        self.assertEqual(self.quest.status, Quest.Status.ABANDONED)
+        self.assertRedirects(
+            response, reverse("quests:detail", kwargs={"pk": self.quest.pk})
+        )
+
+    def test_abandoning_restores_backlog_entry(self):
+        self.client.force_login(self.user)
+        self.assertFalse(
+            BacklogEntry.objects.filter(user=self.user, game=self.game).exists()
+        )
+        self.client.post(self.url)
+        self.assertTrue(
+            BacklogEntry.objects.filter(user=self.user, game=self.game).exists()
+        )
+
+    def test_abandoning_does_not_error_if_backlog_entry_already_exists(self):
+        BacklogEntry.objects.create(user=self.user, game=self.game)
+        self.client.force_login(self.user)
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            BacklogEntry.objects.filter(user=self.user, game=self.game).count(), 1
+        )
+
+    def test_cannot_abandon_completed_quest(self):
+        self.quest.status = Quest.Status.COMPLETED
+        self.quest.save(update_fields=["status"])
+        self.client.force_login(self.user)
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 404)
+        self.quest.refresh_from_db()
+        self.assertEqual(self.quest.status, Quest.Status.COMPLETED)
+
+    def test_cannot_abandon_already_abandoned_quest(self):
+        self.quest.status = Quest.Status.ABANDONED
+        self.quest.save(update_fields=["status"])
+        self.client.force_login(self.user)
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_not_allowed(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 405)
+
+
+class QuestListViewAbandonedBucketTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="hero", password="pw")
+        self.game = Game.objects.create(title="Doom", slug="doom")
+        self.url = reverse("quests:list")
+
+    def test_abandoned_quest_appears_in_abandoned_bucket_only(self):
+        quest = Quest.objects.create(
+            user=self.user, game=self.game, status=Quest.Status.ABANDONED
+        )
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.context["abandoned_quests"], [quest])
+        self.assertEqual(response.context["active_quests"], [])
+        self.assertEqual(response.context["completed_quests"], [])
+
+
 class QuestOwnershipScopingTests(TestCase):
     def setUp(self):
         self.owner = User.objects.create_user(

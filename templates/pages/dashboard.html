@@ -1,0 +1,118 @@
+{% extends "_base.html" %}
+
+{% block title %}Dashboard · Questlog{% endblock %}
+
+{% block content %}
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <div>
+          <div class="text-muted small">Welcome back</div>
+          <h2 class="mb-0">{{ user.username }}</h2>
+        </div>
+        <div class="text-end">
+          <span class="badge bg-purple-lt fs-4">Level {{ profile.level }}</span>
+        </div>
+      </div>
+      <div class="progress mb-1" style="height: 10px;">
+        <div class="progress-bar bg-purple xp-bar" role="progressbar" style="width: {{ xp_progress_percent }}%"
+             aria-valuenow="{{ xp_progress_percent }}" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+      <div class="text-muted small">
+        {{ profile.total_xp }} XP total ·
+        {% if xp_to_next_level > 0 %}
+          {{ xp_to_next_level }} XP to level {{ profile.level|add:1 }}
+        {% else %}
+          Max level reached
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="row row-cards mb-4">
+    <div class="col-6 col-md-3">
+      <div class="card card-sm">
+        <div class="card-body">
+          <div class="subheader">Backlog</div>
+          <div class="h1 mb-0">{{ backlog_count }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card card-sm">
+        <div class="card-body">
+          <div class="subheader">Active Quests</div>
+          <div class="h1 mb-0">{{ active_quest_count }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card card-sm">
+        <div class="card-body">
+          <div class="subheader">Completed</div>
+          <div class="h1 mb-0">{{ completed_quest_count }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card card-sm">
+        <div class="card-body">
+          <div class="subheader">Reviews</div>
+          <div class="h1 mb-0">{{ review_count }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if backlog_count > 0 and active_quest_count == 0 %}
+    <div class="alert alert-info d-flex align-items-center justify-content-between mb-4">
+      <span>You've got {{ backlog_count }} game{{ backlog_count|pluralize }} waiting in your backlog.</span>
+      <a href="{% url 'games:backlog' %}" class="btn btn-sm btn-primary">Start a quest</a>
+    </div>
+  {% elif backlog_count == 0 and active_quest_count == 0 and completed_quest_count == 0 %}
+    <div class="alert alert-info d-flex align-items-center justify-content-between mb-4">
+      <span>Nothing in your backlog yet — browse games to get started.</span>
+      <a href="{% url 'games:list' %}" class="btn btn-sm btn-primary">Browse games</a>
+    </div>
+  {% endif %}
+
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <h3 class="mb-0">Active Quests</h3>
+        {% if active_quest_count > 5 %}
+          <a href="{% url 'quests:list' %}" class="small">View all ({{ active_quest_count }})</a>
+        {% endif %}
+      </div>
+      {% if active_quests %}
+        {% for quest in active_quests %}
+          <a href="{% url 'quests:detail' quest.pk %}" class="card quest-card text-decoration-none mb-2 d-block">
+            <div class="card-body py-2 d-flex align-items-center justify-content-between">
+              <span class="fw-bold">{{ quest.game.title }}</span>
+              <span class="text-muted small">Started {{ quest.created_at|date:"M j" }}</span>
+            </div>
+          </a>
+        {% endfor %}
+      {% else %}
+        <p class="text-muted">No active quests right now.</p>
+      {% endif %}
+    </div>
+
+    <div class="col-md-6">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <h3 class="mb-0">Recent Reviews</h3>
+        {% if review_count > 5 %}
+          <a href="{% url 'reviews:list' %}" class="small">Browse all reviews</a>
+        {% endif %}
+      </div>
+      {% if recent_reviews %}
+        {% for review in recent_reviews %}
+          {% include "reviews/_review_card.html" %}
+        {% endfor %}
+      {% else %}
+        <p class="text-muted">You haven't written any reviews yet.</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

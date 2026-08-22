@@ -1,11 +1,11 @@
 <div class="navbar navbar-expand-md navbar-light sticky-top tabs-bar d-print-none">
   <div class="container-xl">
     <div class="navbar-nav flex-row overflow-x-auto">
-
-        <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
-            href="{% url 'pages:home' %}">
-            <span class="nav-link-icon"><i class="ti ti-home"></i></span>
-            <span class="nav-link-title">Home</span>
+        
+        <a class="nav-link {% if request.resolver_match.view_name == 'pages:dashboard' %}active{% endif %}"
+            href="{% url 'pages:dashboard' %}">
+            <span class="nav-link-icon"><i class="ti ti-layout-dashboard"></i></span>
+            <span class="nav-link-title">Dashboard</span>
         </a>
 
         <a class="nav-link {% if request.resolver_match.view_name == 'games:list' %}active{% endif %}"

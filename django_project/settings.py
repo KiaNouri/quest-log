@@ -173,3 +173,4 @@ DEFAULT_FROM_EMAIL = "Questlog <noreply@questlog.app>"
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_SIGNUP_FIELDS = ["username*", "email*", "password1*"]
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_MAX_EMAIL_ADDRESSES = 1

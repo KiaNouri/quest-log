@@ -6,7 +6,7 @@
     {% include "partials/_head.html" %}
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
     <header class="navbar navbar-expand-md navbar-light d-print-none">
         <div class="container-xl">
@@ -21,13 +21,20 @@
                     <i class="ti ti-moon ti-size-3 theme-icon-dark"></i>
                     <i class="ti ti-sun-high ti-size-3 theme-icon-light"></i>
                 </button>
-                <a href="{% url 'account_login' %}" class="btn btn-ghost-secondary">Log in</a>
-                <a href="{% url 'account_signup' %}" class="btn btn-primary">Sign up</a>
+
+                {% if user.is_authenticated %}
+                    <a href="{% url 'pages:dashboard' %}" class="btn btn-primary">
+                        <i class="ti ti-layout-dashboard me-1"></i> Dashboard
+                    </a>
+                {% else %}
+                    <a href="{% url 'account_login' %}" class="btn btn-ghost-secondary">Log in</a>
+                    <a href="{% url 'account_signup' %}" class="btn btn-primary">Sign up</a>
+                {% endif %}
             </div>
         </div>
     </header>
 
-    <div class="page-body">
+    <div class="page-body flex-grow-1">
         <div class="container-xl">
             {% block content %}{% endblock %}
         </div>

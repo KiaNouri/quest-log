@@ -29,9 +29,15 @@
             <div class="nav-item dropdown">
                 <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown"
                     aria-label="Open user menu">
-                    <span class="avatar avatar-sm rounded bg-primary-lt">
-                        {{ user.username|default:"?"|first|upper }}
-                    </span>
+                    {% if user.profile and user.profile.profile_picture %}
+                        <img src="{{ user.profile.profile_picture.url }}"
+                            alt="{{ user.username }}"
+                            class="avatar avatar-sm rounded object-fit-cover">
+                    {% else %}
+                        <span class="avatar avatar-sm rounded bg-primary-lt">
+                            {{ user.username|default:"?"|first|upper }}
+                        </span>
+                    {% endif %}
                     <div class="d-none d-xl-block ps-2">
                         <div>{{ user.username|default:"Guest" }}</div>
                         <div class="mt-1 small text-muted">Level {{ user.profile.level|default:"1" }}</div>

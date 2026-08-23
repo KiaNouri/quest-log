@@ -6,14 +6,36 @@ from django.db import models
 from django.db.models import F
 
 
+def profile_picture_upload_path(instance, filename):
+    """
+    One file per user. Renames the file by user id rather than original filename.
+
+    Avoids filename collisions between users and avoids leaking the original
+    uploaded filename.
+    """
+    ext = filename.rsplit(".", 1)[-1] if "." in filename else ""
+    name = f"user_{instance.user_id}"
+    return f"profile_pictures/{name}.{ext}" if ext else f"profile_pictures/{name}"
+
+
 class CustomUser(AbstractUser):
     pass
 
 
 class Profile(models.Model):
+    """
+    One profile belongs to one user.
+
+    Contains the informations of one user that other users can see.
+    """
+
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     total_xp = models.PositiveIntegerField(default=0)
     level = models.PositiveIntegerField(default=1)
+    bio = models.TextField(blank=True, max_length=300)
+    profile_picture = models.ImageField(
+        upload_to=profile_picture_upload_path, blank=True, null=True
+    )
 
     def __str__(self):
         return f"{self.user.username}'s profile"

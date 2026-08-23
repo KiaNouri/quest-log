@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import F
+from django.urls import reverse
 
 
 def profile_picture_upload_path(instance, filename):
@@ -39,6 +40,9 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s profile"
+
+    def get_absolute_url(self):
+        return reverse("accounts:detail", kwargs={"username": self.user.username})
 
     @staticmethod
     def level_for_xp(total_xp):

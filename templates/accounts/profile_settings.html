@@ -1,0 +1,63 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container-xl py-4">
+  <div class="row row-cards justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Edit Profile</h3>
+        </div>
+        <div class="card-body">
+          {% if object.profile_picture %}
+            <div class="mb-3">
+              <span class="avatar avatar-lg rounded" style="background-image: url('{{ object.profile_picture.url }}')"></span>
+            </div>
+          {% endif %}
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="form-footer d-flex justify-content-end gap-2">
+              <a href="{% url 'accounts:detail' request.user.username %}" class="btn btn-link">Cancel</a>
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card mt-3">
+        <div class="card-header">
+          <h3 class="card-title">Account Settings</h3>
+        </div>
+        <div class="list-group list-group-flush">
+          <a href="{% url 'account_email' %}" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
+            <span>
+              <i class="ti ti-mail me-2"></i> Manage Email Address
+            </span>
+            <i class="ti ti-chevron-right text-muted"></i>
+          </a>
+          {% if user.has_usable_password %}
+            <a href="{% url 'account_change_password' %}" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
+              <span>
+                <i class="ti ti-lock me-2"></i> Change Password
+              </span>
+              <i class="ti ti-chevron-right text-muted"></i>
+            </a>
+          {% else %}
+            {# Social-login-only accounts have no password yet — allauth's
+               change-password view 404s for them; set-password is the
+               correct entry point instead. Will add social logins later.#}
+            <a href="{% url 'account_set_password' %}" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
+              <span>
+                <i class="ti ti-lock me-2"></i> Set a Password
+              </span>
+              <i class="ti ti-chevron-right text-muted"></i>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

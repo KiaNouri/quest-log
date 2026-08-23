@@ -3,13 +3,13 @@
     <div class="d-flex align-items-start justify-content-between mb-2">
       <div class="d-flex align-items-center">
         {# TODO: point at the real profile URL once accounts:profile exists #}
-        <a href="#" class="avatar avatar-sm rounded me-2"
+        <a href="{{ review.user.profile.get_absolute_url }}" class="avatar avatar-sm rounded me-2"
            {% if review.user.profile.profile_picture %}style="background-image: url('{{ review.user.profile.profile_picture.url }}')"{% endif %}>
           {% if not review.user.profile.profile_picture %}{{ review.user.username|slice:":2"|upper }}{% endif %}
         </a>
         <div>
           <div>
-            <a href="#" class="fw-bold text-reset text-decoration-none">{{ review.user.username }}</a>
+            <a href="{{ review.user.profile.get_absolute_url }}" class="fw-bold text-reset text-decoration-none">{{ review.user.username }}</a>
             <span class="badge bg-purple-lt ms-1">Lvl {{ review.user.profile.level|default:1 }}</span>
           </div>
           <div class="text-muted small">{{ review.created_at|date:"M j, Y" }}</div>
@@ -59,9 +59,7 @@
       </div>
 
       <div>
-        {% if request.resolver_match.url_name != "detail" %}
-          <a href="{{ review.get_absolute_url }}" class="btn btn-sm btn-link">View</a>
-        {% endif %}
+        <a href="{{ review.get_absolute_url }}" class="btn btn-sm btn-link">View</a>
         {% if request.user == review.user %}
           <a href="{% url 'reviews:delete' review.pk %}" class="btn btn-sm btn-link text-danger">Delete</a>
         {% endif %}

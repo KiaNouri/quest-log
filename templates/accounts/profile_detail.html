@@ -1,0 +1,59 @@
+{% extends "_base.html" %}
+
+{% block title %}{{ profile.user.username }} · Questlog{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body text-center">
+        <span class="avatar avatar-xl rounded mb-3"
+              {% if profile.profile_picture %}style="background-image: url('{{ profile.profile_picture.url }}')"{% endif %}>
+          {% if not profile.profile_picture %}{{ profile.user.username|slice:":2"|upper }}{% endif %}
+        </span>
+        <h2 class="mb-0">{{ profile.user.username }}</h2>
+        <span class="badge bg-purple-lt mt-2">Level {{ profile.level }}</span>
+        <div class="text-muted small mt-2">{{ profile.total_xp }} XP total</div>
+        <div class="text-muted small">Joined {{ profile.user.date_joined|date:"M Y" }}</div>
+
+        {% if profile.bio %}
+          <p class="mt-3 text-start">{{ profile.bio|linebreaksbr }}</p>
+        {% endif %}
+
+        {% if request.user == profile.user %}
+          <a href="{% url 'accounts:settings' %}" class="btn btn-outline-primary w-100 mt-3">Edit Profile</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card mt-3">
+      <div class="card-body">
+        <div class="row text-center">
+          <div class="col-6">
+            <div class="h2 mb-0">{{ completed_quest_count }}</div>
+            <div class="text-muted small">Quests Completed</div>
+          </div>
+          <div class="col-6">
+            <div class="h2 mb-0">{{ review_count }}</div>
+            <div class="text-muted small">Reviews Written</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <h3 class="mb-3">{{ profile.user.username }}'s Reviews</h3>
+    {% if reviews %}
+      {% for review in reviews %}
+        {% include "reviews/_review_card.html" %}
+      {% endfor %}
+    {% else %}
+      <p class="text-muted">No reviews yet.</p>
+    {% endif %}
+  </div>
+
+</div>
+
+{% endblock %}

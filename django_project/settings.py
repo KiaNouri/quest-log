@@ -142,6 +142,11 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
+# Media files (user uploaded)
+
+MEDIA_URL = "meida/"
+MEDIA_ROOT = BASE_DIR / "media"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -155,9 +160,9 @@ CRISPY_ALLOWED_TEMPLATE_PACK = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # django-allauth config
-LOGIN_REDIRECT_URL = "pages:home"
-LOGOUT_REDIRECT_URL = "pages:home"
-ACCOUNT_LOGOUT_REDIRECT = "pages:home"
+LOGIN_REDIRECT_URL = "pages:dashboard"
+LOGOUT_REDIRECT_URL = "pages:intro"
+ACCOUNT_LOGOUT_REDIRECT = "pages:intro"
 SITE_ID = 1
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
@@ -168,3 +173,4 @@ DEFAULT_FROM_EMAIL = "Questlog <noreply@questlog.app>"
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_SIGNUP_FIELDS = ["username*", "email*", "password1*"]
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_MAX_EMAIL_ADDRESSES = 1

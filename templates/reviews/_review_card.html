@@ -46,14 +46,14 @@
           {% csrf_token %}
           <input type="hidden" name="next" value="{{ request.get_full_path }}">
           <button type="submit" class="btn btn-sm btn-outline-success">
-            <i class="ti ti-arrow-big-up"></i> {{ review.upvote_total|default:review.upvote_count }}
+            <i class="ti ti-arrow-big-up"></i> {{ review.upvote_total }}
           </button>
         </form>
         <form method="post" action="{% url 'reviews:downvote' review.pk %}" class="d-inline">
           {% csrf_token %}
           <input type="hidden" name="next" value="{{ request.get_full_path }}">
           <button type="submit" class="btn btn-sm btn-outline-danger">
-            <i class="ti ti-arrow-big-down"></i> {{ review.downvote_total|default:review.downvote_count }}
+            <i class="ti ti-arrow-big-down"></i> {{ review.downvote_total }}
           </button>
         </form>
       </div>

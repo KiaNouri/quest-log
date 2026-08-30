@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count, Q
 from django.views.generic import TemplateView
 
 from apps.games.models import BacklogEntry
@@ -25,6 +26,10 @@ class DashboardPageView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
         profile = user.profile
+        quest_counts = Quest.objects.filter(user=user).aggregate(
+            active=Count("id", filter=Q(status=Quest.Status.ACTIVE)),
+            completed=Count("id", filter=Q(status=Quest.Status.COMPLETED)),
+        )
 
         context["profile"] = profile
         context.update(self._xp_progress(profile))
@@ -34,12 +39,10 @@ class DashboardPageView(LoginRequiredMixin, TemplateView):
             .select_related("game")
             .order_by("-created_at")
         )
-        context["active_quest_count"] = Quest.objects.filter(
-            user=user, status=Quest.Status.ACTIVE
-        ).count()
-        context["completed_quest_count"] = Quest.objects.filter(
-            user=user, status=Quest.Status.COMPLETED
-        ).count()
+
+        context["active_quest_count"] = quest_counts["active"]
+        context["completed_quest_count"] = quest_counts["completed"]
+
         context["backlog_count"] = BacklogEntry.objects.filter(user=user).count()
 
         user_reviews = (

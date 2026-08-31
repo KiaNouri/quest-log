@@ -33,9 +33,13 @@ RUN groupadd -g ${GID} appgroup && \
     useradd -u ${UID} -g appgroup -m -s /bin/bash appuser && \
     chown -R appuser:appgroup /app
 
+# Copy entrypoint and make it executable with chmod
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 # Switch to the non-root user
 USER appuser
 
 EXPOSE 8000
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["/entrypoint.sh"]

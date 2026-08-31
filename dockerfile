@@ -26,6 +26,8 @@ RUN DJANGO_SETTINGS_MODULE=django_project.settings.production \
     SECRET_KEY=build-time-placeholder \
     DJANGO_ALLOWED_HOSTS=localhost \
     DATABASE_URL=postgres://placeholder:placeholder@localhost:5432/placeholder \
+    EMAIL_HOST_USER=placeholder@example.com \
+    EMAIL_HOST_PASSWORD=placeholder \
     python manage.py collectstatic --noinput
 
 # Create a group and user matching the host's UID/GID, then hand over ownership

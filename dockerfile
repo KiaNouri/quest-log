@@ -20,6 +20,14 @@ RUN pip install -r requirements.txt
 # Copy project
 COPY . .
 
+# Build-time-only dummy values so settings can import for collectstatic.
+# Real values are injected by PaaS at container start.
+RUN DJANGO_SETTINGS_MODULE=django_project.settings.production \
+    SECRET_KEY=build-time-placeholder \
+    DJANGO_ALLOWED_HOSTS=localhost \
+    DATABASE_URL=postgres://placeholder:placeholder@localhost:5432/placeholder \
+    python manage.py collectstatic --noinput
+
 # Create a group and user matching the host's UID/GID, then hand over ownership
 RUN groupadd -g ${GID} appgroup && \
     useradd -u ${UID} -g appgroup -m -s /bin/bash appuser && \

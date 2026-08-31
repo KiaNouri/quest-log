@@ -9,3 +9,4 @@ pillow==12.3.0
 psycopg==3.3.4
 psycopg-binary==3.3.4
 sqlparse==0.5.5
+whitenoise==6.12.0

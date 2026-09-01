@@ -11,7 +11,7 @@ Completing quests gives the user XP and helps them level up their profile.
 ![Quest Log Demo](docs/images/Questlog.gif)
 
 <p align="center">
-  <img src="docs/images/review.png" width="48%" alt="Review page" />
+  <img src="docs/images/reviews.png" width="48%" alt="Review page" />
   <img src="docs/images/profile.png" width="48%" alt="User profile page" />
 </p>
 

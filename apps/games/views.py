@@ -16,13 +16,13 @@ class GameListView(ListView):
     Displays games with optional genre, title, developer and
     publisher filtering.
 
-    Results are ordered alphabetically and paginated to 20 games.
+    Results are ordered alphabetically and paginated to 24 games.
     """
 
     model = Game
     template_name = "games/game_list.html"
     context_object_name = "games"
-    paginate_by = 20
+    paginate_by = 24
 
     def get_queryset(self):
         queryset = Game.objects.all().order_by("title")
